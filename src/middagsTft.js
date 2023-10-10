@@ -8,12 +8,13 @@ const isWithinMiddagsTftTimeRange = (timestamp) => {
 }
 
 const isMiddagsTft = (matchDto) => {
-    // game finished during lunch time 
-    if (!isWithinMiddagsTftTimeRange(matchDto.info.game_datetime)) {
+    // check if game finished during lunch time
+    // the unix timestamp in the DTO is in milliseconds, so convert to seconds
+    if (!isWithinMiddagsTftTimeRange(matchDto.info.game_datetime / 1000)) {
         return false;
     }
 
-    // game featured participants from all teams
+    // check if game featured participants from all teams
     const teams = db.getTeams();
     const participants = matchDto.metadata.participants;
 

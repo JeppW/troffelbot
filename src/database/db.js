@@ -3,7 +3,7 @@
 class Database {
     constructor() {
         this.teams = new Map();
-        this.recordedGames = [];
+        this.recordedGames = new Set();
         this.messageChannel = '';
     }
 
@@ -49,11 +49,11 @@ class Database {
     }
 
     getRecordedGames() {
-        return this.recordedGames;
+        return Array.from(this.recordedGames);
     }
     
     addToRecordedGames(gameId) {
-        this.recordedGames.push(gameId);
+        this.recordedGames.add(gameId);
     }
     
     getAllPlayerPuuids() {

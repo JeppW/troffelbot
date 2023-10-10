@@ -4,10 +4,6 @@ const db = require("../database/db");
 const getScoreboard = () => {
     const teams = db.getTeams();
 
-    if (!teams) {
-        return '```No scoreboard available.```';
-    }
-
     // team names are padded with whitespace so their scores line up nicely
     const longestTeamName = Math.max(...teams.map(team => team.name.length))
 

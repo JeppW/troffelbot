@@ -19,12 +19,12 @@ const checkNewMatchResults = async (client) => {
 
     // if so, find the winner, update the scoreboard and post an update
     const winner = getMiddagsTftWinner(newGame);
-    db.registerWin(winner.name, newGame.info.match_id);
+    db.registerWin(winner.name, newGame.metadata.match_id);
 
     const scoreboard = getScoreboard();
 
     client.channels.fetch(channelId)
-        .then(channel => channel.send(`${winner.name} won MiddagsTFT!`))
+        .then(channel => channel.send(`\`${winner.name}\` won MiddagsTFT!`))
         .catch(console.error);
 
     client.channels.fetch(channelId)
