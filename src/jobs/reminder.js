@@ -23,6 +23,6 @@ function sendMiddagsTftReminder(client) {
 }
 
 module.exports = {
-    schedule: '25 11 * * *',
+    schedule: '25 11 * * * 1-5',
     execute: sendMiddagsTftReminder
 };
