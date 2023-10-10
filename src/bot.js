@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits } = require("discord.js");
 
 const loadCommands = require('./util/loadCommands');
-const scheduleJobs = require('./util/scheduleJobs')
+const scheduleJobs = require('./util/scheduleJobs');
 
 require('dotenv').config();
 
