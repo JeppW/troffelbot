@@ -1,6 +1,6 @@
 const { ApplicationCommandOptionType } = require('discord.js');
-const { getPuuid } = require('../riot');
-const db = require("../database/db");
+const { getPuuid } = require('../integrations/riot');
+const db = require('../database/db');
 
 const addPlayer = async (interaction) => {
     const teamName = interaction.options.getString('team-name');
@@ -49,4 +49,4 @@ module.exports = {
         }
     ],
     execute: addPlayer
-}
+};

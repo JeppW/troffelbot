@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { getTodayTimestamp } = require('./util/time');
+const { getTodayTimestamp } = require('../util/time');
 
 // internal helper function for making API requests to the Riot API
 // should not be called directly
@@ -24,7 +24,7 @@ const _request = async (path, params = {}) => {
 
 // get the puuid by Riot username
 // the puuid is a unique identifier for Riot Games accounts used in other API requests
-const getPuuid = async (gameName, tagLine = "EUW") => {
+const getPuuid = async (gameName, tagLine = 'EUW') => {
     let userData = await _request(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
     return userData.puuid;
 }

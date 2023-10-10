@@ -1,5 +1,5 @@
-const db = require("../database/db");
-const { getScoreboard } = require("../util/scoreboard");
+const db = require('../database/db');
+const { getScoreboard } = require('../core/scoreboard');
 
 const displayStatus = (interaction) => {
     const scoreboard = getScoreboard();
@@ -11,4 +11,4 @@ module.exports = {
     description: 'Display the current MiddagsTFT status',
     options: [],
     execute: displayStatus
-}
+};

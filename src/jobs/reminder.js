@@ -1,4 +1,4 @@
-const db = require("../database/db");
+const db = require('../database/db');
 
 const reminderMessages = [
     `Wake up, babes. It's time for <:MiddagsTFT:${process.env.MIDDAGSTFT_EMOJI_ID}>`,

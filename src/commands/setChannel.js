@@ -1,5 +1,5 @@
 const { ApplicationCommandOptionType } = require('discord.js');
-const db = require("../database/db")
+const db = require('../database/db');
 
 const setChannel = (interaction) => {
     const channel = interaction.options.getChannel('channel');
@@ -21,4 +21,4 @@ module.exports = {
         }
     ],
     execute: setChannel
-}
+};

@@ -7,4 +7,4 @@ module.exports = {
     description: 'Check if the bot is up',
     options: [],
     execute: ping
-}
+};

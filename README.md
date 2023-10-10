@@ -2,7 +2,7 @@
 A Discord bot for managing *MiddagsTFT*, a proud COMTEK tradition.
 
 ## Features
-trøffelbot uses the Riot API to automatically keep track of who's winning Teamfight Tactics matches played during the lunch break. It constantly monitors the participants' match histories and maintains a scoreboard. The scoreboard is updated and displayed in the Discord channel every time a new game of MiddagsTFT is played.
+trøffelbot uses the Riot API to automatically keep track of who's winning Teamfight Tactics matches played during the lunch break. It constantly monitors the participants' match histories and maintains a scoreboard. The scoreboard is updated and displayed in a Discord channel every time a new game of MiddagsTFT is played.
 
 trøffelbot also issues a daily MiddagsTFT reminder.
 

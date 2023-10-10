@@ -8,7 +8,7 @@ const scheduleJobs = (client) => {
     for (const file of jobFiles) {
         const job = require(`../jobs/${file}`);
         new CronJob(job.schedule, () => {
-            job.execute(client)
+            job.execute(client);
         }, null, true, process.env.TIMEZONE);
     }
 };

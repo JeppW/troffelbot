@@ -1,6 +1,6 @@
-const db = require("./database/db");
-const { getMatchHistory, getMatchInfo } = require("./riot");
-const { getLocalHourFromTimestamp } = require("./util/time");
+const db = require('../database/db');
+const { getMatchHistory, getMatchInfo } = require('../integrations/riot');
+const { getLocalHourFromTimestamp } = require('../util/time');
 
 const isWithinMiddagsTftTimeRange = (timestamp) => {
     const hours = getLocalHourFromTimestamp(timestamp);

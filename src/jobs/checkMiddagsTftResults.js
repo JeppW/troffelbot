@@ -1,7 +1,11 @@
-const db = require("../database/db");
-const { getCurrentTime } = require("../util/time");
-const { getScoreboard } = require("../util/scoreboard");
-const { checkForNewMiddagsTft, isWithinMiddagsTftTimeRange, getMiddagsTftWinner } = require("../middagsTft");
+const db = require('../database/db');
+const { getCurrentTime } = require('../util/time');
+const { getScoreboard } = require('../core/scoreboard');
+const { 
+    checkForNewMiddagsTft, 
+    isWithinMiddagsTftTimeRange, 
+    getMiddagsTftWinner 
+} = require('../core/middagsTft');
 
 // this function checks if any new middagsTFT matches have been played
 // if so, it updates the score and posts an update on the Discord server
