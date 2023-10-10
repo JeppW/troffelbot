@@ -1,9 +1,16 @@
+// the bot's "database" is just the variables of this class
+// this means that the database is emptied every time the bot is restarted
 class Database {
     constructor() {
         this.teams = new Map();
         this.recordedGames = [];
         this.messageChannel = '';
     }
+
+    /////
+    // helper methods for interacting with the database
+    /////
+
     addTeam(name) {
         this.teams.set(name, {name: name, players: [], score: 0});
     }
@@ -50,10 +57,10 @@ class Database {
     }
     
     getAllPlayerPuuids() {
-        const teams = Array.from(this.teams.values());
-        return teams.reduce((acc, team) => {
+        const teams = this.getTeams();
+        return teams.reduce((allPuuids, team) => {
             const teamPuuids = team.players.map(player => player.puuid);
-            return acc.concat(teamPuuids);
+            return allPuuids.concat(teamPuuids);
         }, []);
     };
     
@@ -68,6 +75,9 @@ class Database {
     }
 }
 
+// use a singleton structure; when the database is imported
+// by other modules, they interact with the same database
+// rather than initialize their own
 const db = new Database();
 
 module.exports = db;

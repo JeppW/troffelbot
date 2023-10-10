@@ -1,4 +1,4 @@
-function ping(interaction) {
+const ping = (interaction) => {
     interaction.reply("Yeah, yeah, I'm still here. What do you need?");
 }
 

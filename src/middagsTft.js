@@ -1,14 +1,14 @@
-const db = require("./database/db.js");
-const { getMatchHistory, getMatchInfo } = require("./riot.js");
-const { getLocalHourFromTimestamp } = require("./util/time.js");
+const db = require("./database/db");
+const { getMatchHistory, getMatchInfo } = require("./riot");
+const { getLocalHourFromTimestamp } = require("./util/time");
 
-function isWithinMiddagsTftTimeRange(timestamp) {
+const isWithinMiddagsTftTimeRange = (timestamp) => {
     const hours = getLocalHourFromTimestamp(timestamp);
     return (hours >= 11 && hours < 14);
 }
 
-function isMiddagsTft(matchDto) {
-    // game finished between 11 and 14    
+const isMiddagsTft = (matchDto) => {
+    // game finished during lunch time 
     if (!isWithinMiddagsTftTimeRange(matchDto.info.game_datetime)) {
         return false;
     }
@@ -17,7 +17,7 @@ function isMiddagsTft(matchDto) {
     const teams = db.getTeams();
     const participants = matchDto.metadata.participants;
 
-    for (team of teams) {
+    for (const team of teams) {
         const playerPuuids = db.getPlayerPuuidsForTeam(team.name);
         if (!(playerPuuids.some(player => participants.includes(player)))) {
             return false;
@@ -27,7 +27,7 @@ function isMiddagsTft(matchDto) {
     return true;
 }
 
-function getMiddagsTftWinner(matchDto) {
+const getMiddagsTftWinner = (matchDto) => {
     const teams = db.getTeams();
     const participants = matchDto.info.participants;
     
@@ -36,8 +36,8 @@ function getMiddagsTftWinner(matchDto) {
 
     // find the best placement acheived by a member of either team
     // the team to which the best-placing member belongs is the winner
-    for (participant of participants) {
-        for (team of teams) {
+    for (const participant of participants) {
+        for (const team of teams) {
             const playerPuuids = db.getPlayerPuuidsForTeam(team.name);
             if (playerPuuids.includes(participant.puuid)) {
                 return team;
@@ -48,27 +48,31 @@ function getMiddagsTftWinner(matchDto) {
     throw new Error("This game wasn't MiddagsTFT!");
 }
 
-async function getCombinedMatchHistory() {
-    const games = [];
+// get all games that any player has played today
+const getCombinedMatchHistory = async () => {
+    // use a set to avoid duplicates
+    const games = new Set();
     const allPlayers = db.getAllPlayerPuuids();
     
-    for (player of allPlayers) {
+    for (const player of allPlayers) {
         const matchHistory = await getMatchHistory(player);
         if (!matchHistory) continue;
-        games.push(...matchHistory);
+        for (const game of matchHistory) {
+            games.add(game);
+        }
     }
 
-    return games;
+    return Array.from(games);
 }
 
 // returns the DTO of a valid MiddagsTFT game if one is found
 // otherwise, returns null
-async function checkForNewMiddagsTft() {
+const checkForNewMiddagsTft = async () => {
     const games = await getCombinedMatchHistory();
 
     if (!games) return;
 
-    for (game of games) {
+    for (const game of games) {
         if (db.getRecordedGames().includes(game)) {
             // don't return games that have already been recorded
             continue;

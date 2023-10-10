@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const db = require("../database/db")
 
-function addTeam(interaction) {
+const addTeam = async (interaction) => {
     const teamName = interaction.options.getString('team-name');
 
     if (db.teamExists(teamName)) {

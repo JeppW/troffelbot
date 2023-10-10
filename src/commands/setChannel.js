@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const db = require("../database/db")
 
-function setChannel(interaction) {
+const setChannel = (interaction) => {
     const channel = interaction.options.getChannel('channel');
     
     db.setMessageChannel(channel.id);

@@ -1,7 +1,7 @@
 const db = require("../database/db");
 const { getScoreboard } = require("../util/scoreboard");
 
-function displayStatus(interaction) {
+const displayStatus = (interaction) => {
     const scoreboard = getScoreboard();
     interaction.reply(scoreboard);
 }

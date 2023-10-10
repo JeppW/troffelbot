@@ -1,13 +1,13 @@
 const { Client, GatewayIntentBits } = require("discord.js");
-const db = require("./database/db.js");
 
-const loadCommands = require('./util/loadCommands.js');
-const scheduleJobs = require('./util/scheduleJobs.js')
+const loadCommands = require('./util/loadCommands');
+const scheduleJobs = require('./util/scheduleJobs')
 
 require('dotenv').config();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const commands = loadCommands();
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isCommand()) return;

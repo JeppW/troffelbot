@@ -1,5 +1,5 @@
 const {REST, Routes} = require('discord.js');
-const loadCommands = require('../src/util/loadCommands.js')
+const loadCommands = require('../src/util/loadCommands')
 
 require('dotenv').config();
 

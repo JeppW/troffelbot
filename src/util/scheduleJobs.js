@@ -1,6 +1,7 @@
 const fs = require('fs');
 const CronJob = require('cron').CronJob;
 
+// schedule all the jobs defined in /src/jobs
 const scheduleJobs = (client) => {
     const jobFiles = fs.readdirSync('./src/jobs').filter(file => file.endsWith('.js'));
   

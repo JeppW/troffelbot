@@ -7,11 +7,12 @@ const reminderMessages = [
     `det tid`
 ]
 
-function getRandomReminder() {
+const getRandomReminder = () => {
     return reminderMessages[Math.floor(Math.random() * reminderMessages.length)];
 }
 
-function sendMiddagsTftReminder(client) {
+// send a gentle reminder that it's time to play MiddagsTFT
+const sendMiddagsTftReminder = (client) => {
     const channelId = db.getMessageChannel();
     if (!channelId) return;
 

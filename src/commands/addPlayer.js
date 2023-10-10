@@ -2,7 +2,7 @@ const { ApplicationCommandOptionType } = require('discord.js');
 const { getPuuid } = require('../riot');
 const db = require("../database/db");
 
-async function addPlayer(interaction) {
+const addPlayer = async (interaction) => {
     const teamName = interaction.options.getString('team-name');
     const playerName = interaction.options.getString('player');
     const tagLine = interaction.options.getString('tag-line') || null;

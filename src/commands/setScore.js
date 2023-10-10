@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const db = require("../database/db")
 
-function setScore(interaction) {
+const setScore = (interaction) => {
     const teamName = interaction.options.getString('team-name');
     const score = interaction.options.getInteger('score');
     
