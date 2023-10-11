@@ -24,6 +24,6 @@ const sendMiddagsTftReminder = (client) => {
 }
 
 module.exports = {
-    schedule: '25 11 * * * 1-5',
+    schedule: '0 25 11 * * 1-5',
     execute: sendMiddagsTftReminder
 };

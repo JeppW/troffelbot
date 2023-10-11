@@ -37,6 +37,6 @@ const checkNewMatchResults = async (client) => {
 }
 
 module.exports = {
-    schedule: '*/1 * * * *',
+    schedule: '*/10 * * * * *',
     execute: checkNewMatchResults
 };
