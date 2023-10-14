@@ -11,16 +11,20 @@ class Database {
     // helper methods for interacting with the database
     /////
 
+    getTeam(name) {
+        return this.teams.get(name);
+    }
+
+    teamExists(name) {
+        return !!this.getTeam(name);
+    }
+
     addTeam(name) {
         this.teams.set(name, {name: name, players: [], score: 0});
     }
     
-    getTeam(name) {
-        return this.teams.get(name);
-    }
-    
-    teamExists(name) {
-        return !!this.getTeam(name);
+    removeTeam(name) {
+        this.teams.delete(name);
     }
     
     getTeams() {
@@ -30,6 +34,11 @@ class Database {
     addPlayerToTeam(teamName, playerName, playerPuuid) {
         const team = this.getTeam(teamName);
         team.players.push({name: playerName, puuid: playerPuuid});
+    }
+
+    removePlayer(name) {
+        const team = this.getTeams().find(team => team.players.some(player => player.name === name));
+        team.players = team.players.filter(player => player.name !== name);
     }
     
     getScore(name) {
@@ -55,18 +64,30 @@ class Database {
     addToRecordedGames(gameId) {
         this.recordedGames.add(gameId);
     }
-    
-    getAllPlayerPuuids() {
+
+    getAllPlayers() {
         const teams = this.getTeams();
         return teams.reduce((allPuuids, team) => {
-            const teamPuuids = team.players.map(player => player.puuid);
-            return allPuuids.concat(teamPuuids);
+            return allPuuids.concat(team.players);
         }, []);
+    };
+    
+    getAllPlayerPuuids() {
+        return this.getAllPlayers().map(player => player.puuid);
     };
     
     getPlayerPuuidsForTeam(name) {
         const team = this.getTeam(name);
         return team.players.map(player => player.puuid);
+    };
+
+    getAllPlayerNames() {
+        return this.getAllPlayers().map(player => player.name);
+    };
+    
+    getPlayerNamesForTeam(name) {
+        const team = this.getTeam(name);
+        return team.players.map(player => player.name);
     };
     
     registerWin(name, gameId) {
