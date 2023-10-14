@@ -20,7 +20,7 @@ const isMiddagsTft = (matchDto) => {
 
     for (const team of teams) {
         const playerPuuids = db.getPlayerPuuidsForTeam(team.name);
-        if (!(playerPuuids.some(player => participants.includes(player)))) {
+        if (!playerPuuids.some(player => participants.includes(player))) {
             return false;
         }
     }

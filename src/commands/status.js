@@ -1,9 +1,9 @@
 const db = require('../database/db');
 const { getScoreboard } = require('../core/scoreboard');
 
-const displayStatus = (interaction) => {
+const displayStatus = async (interaction) => {
     const scoreboard = getScoreboard();
-    interaction.reply(scoreboard);
+    await interaction.reply(scoreboard);
 }
 
 module.exports = {

@@ -1,17 +1,17 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const db = require('../database/db');
 
-const setScore = (interaction) => {
+const setScore = async (interaction) => {
     const teamName = interaction.options.getString('team-name');
     const score = interaction.options.getInteger('score');
     
     if (!db.teamExists(teamName)) {
-        return interaction.reply("That team doesn't exist.");
+        return await interaction.reply("That team doesn't exist.");
     }
 
     db.setScore(teamName, score);
 
-    interaction.reply(`Updated score for team \`${teamName}\` to ${score}!`);
+    await interaction.reply(`Updated score for team \`${teamName}\` to ${score}!`);
 }
 
 module.exports = {

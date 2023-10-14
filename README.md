@@ -8,8 +8,10 @@ trøffelbot also issues a daily MiddagsTFT reminder.
 
 ## Commands
 __Team management__
-- `/addteam`: Add a team.
+- `/addteam`: Add a team to the competition.
 - `/addplayer`: Add a player to a team.
+- `/removeteam`: Remove a team from the competition.
+- `/removeplayer`: Remove a player from the competition.
 - `/setscore`: Overwrite the score of a team manually. The bot will update scores automatically, but this is a handy feature in case something goes wrong.
 - `/status`: Display the current scoreboard.
 
@@ -31,7 +33,8 @@ Create an .env file like the example below (the keys below are dummy values and 
 DISCORD_TOKEN=NzQ4NjA2MjcyMzYxOTcyMDAx.X0hVwQ.Vua39sn8PFOuG8DzgCk9MFqxyz4
 DISCORD_APPLICATION_ID=157730590492196864
 RIOT_TOKEN=RGAPI-516b8a0e-6172-11ee-8c99-0242ac120002
-RIOT_REGION=europe
+RIOT_CLUSTER=europe
+RIOT_REGION=euw1
 TIMEZONE=Europe/Copenhagen
 MIDDAGSTFT_EMOJI_ID=1039887656017989753
 ```

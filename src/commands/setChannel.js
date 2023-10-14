@@ -1,12 +1,12 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const db = require('../database/db');
 
-const setChannel = (interaction) => {
+const setChannel = async (interaction) => {
     const channel = interaction.options.getChannel('channel');
     
     db.setMessageChannel(channel.id);
 
-    interaction.reply(`Coolio, I'll post my updates in <#${channel.id}> from now on.`);
+    await interaction.reply(`Coolio, I'll post my updates in <#${channel.id}> from now on.`);
 }
 
 module.exports = {

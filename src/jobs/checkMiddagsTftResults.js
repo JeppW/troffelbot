@@ -37,6 +37,7 @@ const checkNewMatchResults = async (client) => {
 }
 
 module.exports = {
-    schedule: '*/10 * * * * *',
+    // check for new matches every two seconds
+    schedule: '*/2 * * * * *',
     execute: checkNewMatchResults
 };

@@ -1,5 +1,5 @@
-const ping = (interaction) => {
-    interaction.reply("Yeah, yeah, I'm still here. What do you need?");
+const ping = async (interaction) => {
+    await interaction.reply("Yeah, yeah, I'm still here. What do you need?");
 }
 
 module.exports = {
