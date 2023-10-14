@@ -1,4 +1,3 @@
-const db = require('../database/db');
 const { getScoreboard } = require('../core/scoreboard');
 
 const displayStatus = async (interaction) => {

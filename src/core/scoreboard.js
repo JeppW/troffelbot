@@ -1,7 +1,8 @@
-const db = require('../database/db');
+const { guildContext } = require('../database/db');
 
 // get a pretty scoreboard for displaying in a discord channel
 const getScoreboard = () => {
+    const db = guildContext.getDatabase();
     const teams = db.getTeams();
 
     // team names are padded with whitespace so their scores line up nicely

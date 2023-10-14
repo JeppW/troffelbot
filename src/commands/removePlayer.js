@@ -1,7 +1,8 @@
 const { ApplicationCommandOptionType } = require('discord.js');
-const db = require('../database/db');
+const { guildContext } = require('../database/db');
 
 const removePlayer = async (interaction) => {
+    const db = guildContext.getDatabase();
     const playerName = interaction.options.getString('player');
 
     if (!db.getAllPlayerNames().includes(playerName)) {

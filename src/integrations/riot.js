@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { getTodayTimestamp } = require('../util/time');
+const { getTodayTimestamp, sleep } = require('../util/time');
 
 // internal helper function for making API requests to the Riot API
 // should not be called directly
@@ -20,9 +20,15 @@ const _request = async (path, options = {}) => {
             params: params
         });
 
+        // throttle requests a little to help prevent 
+        // exceeding the api request limit
+        await sleep(250);
         return response.data;
 
     } catch (error) {
+        // this will sometimes happen because we exceed the Riot API rate limit
+        // however, the limit will reset, so it is no disaster; we just need
+        // to handle this case everytime we call the API
         console.log(error);
         return false;
     }

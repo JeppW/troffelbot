@@ -13,8 +13,13 @@ const getTodayTimestamp = () => {
     return moment.tz(process.env.TIMEZONE).startOf('day').unix();
 };
 
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 module.exports = {
     getLocalHourFromTimestamp,
     getCurrentTime,
-    getTodayTimestamp
+    getTodayTimestamp,
+    sleep
 };

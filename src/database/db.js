@@ -96,9 +96,57 @@ class Database {
     }
 }
 
+// this class allows multiple servers to use the bot at the same time
+// it keeps track of which database belongs to which server
+class DBManager {
+    constructor() {
+        this.dbs = new Map();
+    }
+
+    createDatabase(guildId) {
+        this.dbs.set(guildId, new Database());
+    }
+
+    getDatabase(guildId) {
+        return this.dbs.get(guildId);
+    }
+
+    databaseExists(guildId) {
+        return !!this.getDatabase(guildId);
+    }
+
+    getAllGuilds() {
+        return this.dbs.keys();
+    }
+}
+
+// a context class for keeping track of the
+// server the bot is interacting with
+class GuildContext {
+    constructor() {
+        this.guildId;
+    }
+
+    set(guildId) {
+        this.guildId = guildId;
+    }
+
+    get() {
+        return this.guildId;
+    }
+
+    getDatabase() {
+        return dbManager.getDatabase(this.guildId);
+    }
+}
+
 // use a singleton structure; when the database is imported
 // by other modules, they interact with the same database
 // rather than initialize their own
-const db = new Database();
+const dbManager = new DBManager();
+const guildContext = new GuildContext();
 
-module.exports = db;
+module.exports = {
+    dbManager, 
+    guildContext
+};

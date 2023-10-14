@@ -1,4 +1,5 @@
-const db = require('../database/db');
+const { dbManager, guildContext } = require('../database/db');
+const { sleep } = require('../util/time');
 
 // keep track of the last reminder that was sent
 let lastReminder = '';
@@ -21,10 +22,6 @@ const getRandomReminder = () => {
     lastReminder = reminder;
     return reminder;
 }
-
-const sleep = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
   
 const randomDelay = async (minMinutes, maxMinutes) => {
     // convert to milliseconds
@@ -42,14 +39,19 @@ const sendMiddagsTftReminder = async (client) => {
     // the exact same time every day
     await randomDelay(0, 20);
 
-    const channelId = db.getMessageChannel();
-    if (!channelId) return;
-
-    const message = getRandomReminder();
-
-    client.channels.fetch(channelId)
-        .then(channel => channel.send(message))
-        .catch(console.error);
+    // send the reminder to all servers
+    for (const guildId of dbManager.getAllGuilds()) {
+        guildContext.set(guildId);
+        const db = guildContext.getDatabase();
+        const channelId = db.getMessageChannel();
+        if (!channelId) continue;
+    
+        const message = getRandomReminder();
+    
+        client.channels.fetch(channelId)
+            .then(channel => channel.send(message))
+            .catch(console.error);
+    }
 }
 
 module.exports = {

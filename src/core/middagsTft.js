@@ -1,4 +1,4 @@
-const db = require('../database/db');
+const { guildContext } = require('../database/db');
 const { getMatchHistory, getMatchInfo } = require('../integrations/riot');
 const { getLocalHourFromTimestamp } = require('../util/time');
 
@@ -8,6 +8,8 @@ const isWithinMiddagsTftTimeRange = (timestamp) => {
 }
 
 const isMiddagsTft = (matchDto) => {
+    const db = guildContext.getDatabase();
+
     // check if game finished during lunch time
     // the unix timestamp in the DTO is in milliseconds, so convert to seconds
     if (!isWithinMiddagsTftTimeRange(matchDto.info.game_datetime / 1000)) {
@@ -29,6 +31,7 @@ const isMiddagsTft = (matchDto) => {
 }
 
 const getMiddagsTftWinner = (matchDto) => {
+    const db = guildContext.getDatabase();
     const teams = db.getTeams();
     const participants = matchDto.info.participants;
     
@@ -50,28 +53,62 @@ const getMiddagsTftWinner = (matchDto) => {
 }
 
 // get all games that any player has played today
+// only choose games that at least one player from each team
+// participated in - this saves us some API requests
 const getCombinedMatchHistory = async () => {
-    // use a set to avoid duplicates
-    const games = new Set();
-    const allPlayers = db.getAllPlayerPuuids();
-    
-    for (const player of allPlayers) {
-        const matchHistory = await getMatchHistory(player);
-        if (!matchHistory) continue;
-        for (const game of matchHistory) {
-            games.add(game);
+    const db = guildContext.getDatabase();
+
+    const teams = db.getTeams();
+    const allGames = new Map();
+
+    for (const team of teams) {
+        const players = db.getPlayerPuuidsForTeam(team.name);
+        const teamGames = new Set();
+
+        for (const player of players) {
+            const playerGames = await getMatchHistory(player);
+
+            if (!playerGames) {
+                // an error occurred during the API request
+                return [];
+            }
+
+            for (const game of playerGames) {
+                teamGames.add(game);
+            }
         }
+
+        allGames.set(team.name, teamGames);
     }
 
-    return Array.from(games);
+    if (allGames.size === 0) {
+        // if we have no teams, there are no games
+        return [];
+    }
+
+    if (Array.from(allGames.values()).some(set => set.size === 0)) {
+        // if any of the teams have zero games, there will be no intersection
+        return [];
+    }
+
+    // one-liner to get the intersection of the sets
+    // i.e. the games that at least member from each team participated in
+    const candidateGames = Array.from(
+        Array.from(allGames.values()).reduce((acc, set) => 
+            new Set([...acc].filter(x => set.has(x)))
+        )
+    );
+
+    return candidateGames;
 }
 
 // returns the DTO of a valid MiddagsTFT game if one is found
 // otherwise, returns null
 const checkForNewMiddagsTft = async () => {
+    const db = guildContext.getDatabase();
     const games = await getCombinedMatchHistory();
 
-    if (!games) return;
+    if (!games) return false;
 
     for (const game of games) {
         if (db.getRecordedGames().includes(game)) {
@@ -80,12 +117,14 @@ const checkForNewMiddagsTft = async () => {
         }
 
         gameDto = await getMatchInfo(game);
-        if (!gameDto) continue;
+        if (!gameDto) return false;  // an error occurred during the API request
 
         if (isMiddagsTft(gameDto)) {
             return gameDto;
         }
     }
+
+    return false;
 }
 
 module.exports = {

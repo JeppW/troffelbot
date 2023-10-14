@@ -1,4 +1,4 @@
-const db = require('../database/db');
+const { dbManager, guildContext } = require('../database/db');
 const { getCurrentTime } = require('../util/time');
 const { getScoreboard } = require('../core/scoreboard');
 const { 
@@ -13,31 +13,37 @@ const checkNewMatchResults = async (client) => {
     // if it isn't middagsTFT time, there's no need to run this function
     if (!isWithinMiddagsTftTimeRange(getCurrentTime())) return;
 
-    // the discord channel where the bot can posts it updates must be configured
-    const channelId = db.getMessageChannel();
-    if (!channelId) return;
+    // check all available databases for new matches
+    for (const guildId of dbManager.getAllGuilds()) {
+        guildContext.set(guildId);
+        const db = guildContext.getDatabase();
 
-    // check if any games have been played
-    const newGame = await checkForNewMiddagsTft();
-    if (!newGame) return;
+        // the discord channel where the bot can posts it updates must be configured
+        const channelId = db.getMessageChannel();
+        if (!channelId) return;
 
-    // if so, find the winner, update the scoreboard and post an update
-    const winner = getMiddagsTftWinner(newGame);
-    db.registerWin(winner.name, newGame.metadata.match_id);
+        // check if any games have been played
+        const newGame = await checkForNewMiddagsTft();
+        if (!newGame) return;
 
-    const scoreboard = getScoreboard();
+        // if so, find the winner, update the scoreboard and post an update
+        const winner = getMiddagsTftWinner(newGame);
+        db.registerWin(winner.name, newGame.metadata.match_id);
 
-    client.channels.fetch(channelId)
-        .then(channel => channel.send(`\`${winner.name}\` won MiddagsTFT!`))
-        .catch(console.error);
+        const scoreboard = getScoreboard();
 
-    client.channels.fetch(channelId)
-        .then(channel => channel.send(scoreboard))
-        .catch(console.error);
+        client.channels.fetch(channelId)
+            .then(channel => channel.send(`\`${winner.name}\` won MiddagsTFT!`))
+            .catch(console.error);
+
+        client.channels.fetch(channelId)
+            .then(channel => channel.send(scoreboard))
+            .catch(console.error);
+    }
 }
 
 module.exports = {
-    // check for new matches every two seconds
-    schedule: '*/2 * * * * *',
+    // check for new matches every twelve seconds
+    schedule: '*/12 * * * * *',
     execute: checkNewMatchResults
 };
