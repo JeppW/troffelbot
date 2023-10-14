@@ -3,8 +3,14 @@ const { getTodayTimestamp } = require('../util/time');
 
 // internal helper function for making API requests to the Riot API
 // should not be called directly
-const _request = async (path, params = {}) => {
-    const url = `https://${process.env.RIOT_REGION}.api.riotgames.com${path}`;
+const _request = async (path, options = {}) => {
+    // parse optional parameters
+    const { 
+        region = process.env.RIOT_CLUSTER, // default to the environment variable
+        params = {} 
+    } = options;
+    
+    const url = `https://${region}.api.riotgames.com${path}`;
     
     try {
         const response = await axios.get(url, {
@@ -24,8 +30,9 @@ const _request = async (path, params = {}) => {
 
 // get the puuid by Riot username
 // the puuid is a unique identifier for Riot Games accounts used in other API requests
-const getPuuid = async (gameName, tagLine = 'EUW') => {
-    let userData = await _request(`/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`);
+const getPuuid = async (summonerName) => {
+    // this endpoint for some reason uses the player region rather than the cluster region
+    let userData = await _request(`/tft/summoner/v1/summoners/by-name/${summonerName}/`, {region: process.env.RIOT_REGION});
     return userData.puuid;
 }
 
@@ -33,7 +40,7 @@ const getPuuid = async (gameName, tagLine = 'EUW') => {
 // by default only gets today's matches
 const getMatchHistory = async (puuid, startTime = null) => {
     if (!startTime) startTime = getTodayTimestamp();
-    let matchHistory = await _request(`/tft/match/v1/matches/by-puuid/${puuid}/ids`, {startTime: startTime});
+    let matchHistory = await _request(`/tft/match/v1/matches/by-puuid/${puuid}/ids`, {params: {startTime: startTime}});
     return matchHistory;
 }
 
