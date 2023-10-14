@@ -4,11 +4,12 @@ const db = require('../database/db');
 let lastReminder = '';
 
 const reminderMessages = [
-    `Wake up, babes. It's time for <:MiddagsTFT:${process.env.MIDDAGSTFT_EMOJI_ID}>`,
+    `wake up, babes. it's <:MiddagsTFT:${process.env.MIDDAGSTFT_EMOJI_ID}> time`,
+    `<:MiddagsTFT:${process.env.MIDDAGSTFT_EMOJI_ID}>?`,
     `<:MiddagsTFT:${process.env.MIDDAGSTFT_EMOJI_ID}>`.repeat(3),
     `<:MiddagsTFT:${process.env.MIDDAGSTFT_EMOJI_ID}>`.repeat(24),
     `det tid`
-]
+];
 
 const getRandomReminder = () => {
     // filter the last reminder from the list of reminders
