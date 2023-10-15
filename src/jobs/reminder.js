@@ -43,6 +43,7 @@ const sendMiddagsTftReminder = async (client) => {
     for (const guildId of dbManager.getAllGuilds()) {
         guildContext.set(guildId);
         const db = guildContext.getDatabase();
+        
         const channelId = db.getMessageChannel();
         if (!channelId) continue;
     

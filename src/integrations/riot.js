@@ -29,7 +29,7 @@ const _request = async (path, options = {}) => {
         // this will sometimes happen because we exceed the Riot API rate limit
         // however, the limit will reset, so it is no disaster; we just need
         // to handle this case everytime we call the API
-        console.log(error);
+        console.error(error);
         return false;
     }
 }
@@ -38,7 +38,7 @@ const _request = async (path, options = {}) => {
 // the puuid is a unique identifier for Riot Games accounts used in other API requests
 const getPuuid = async (summonerName) => {
     // this endpoint for some reason uses the player region rather than the cluster region
-    let userData = await _request(`/tft/summoner/v1/summoners/by-name/${summonerName}/`, {region: process.env.RIOT_REGION});
+    const userData = await _request(`/tft/summoner/v1/summoners/by-name/${summonerName}/`, {region: process.env.RIOT_REGION});
     return userData.puuid;
 }
 
@@ -46,7 +46,7 @@ const getPuuid = async (summonerName) => {
 // by default only gets today's matches
 const getMatchHistory = async (puuid, startTime = null) => {
     if (!startTime) startTime = getTodayTimestamp();
-    let matchHistory = await _request(`/tft/match/v1/matches/by-puuid/${puuid}/ids`, {params: {startTime: startTime}});
+    const matchHistory = await _request(`/tft/match/v1/matches/by-puuid/${puuid}/ids`, {params: {startTime: startTime}});
     return matchHistory;
 }
 
@@ -54,7 +54,7 @@ const getMatchHistory = async (puuid, startTime = null) => {
 // the match DTO contains all the information about the match
 // reference: https://developer.riotgames.com/apis#tft-match-v1/GET_getMatch
 const getMatchInfo = async (matchId) => {
-    let matchInfo = await _request(`/tft/match/v1/matches/${matchId}`);
+    const matchInfo = await _request(`/tft/match/v1/matches/${matchId}`);
     return matchInfo;
 }
 

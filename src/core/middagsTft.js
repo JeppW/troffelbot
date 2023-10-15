@@ -78,6 +78,13 @@ const getCombinedMatchHistory = async () => {
             }
         }
 
+        if (teamGames.size === 0) {
+            // if any team has zero games, there's no way
+            // there has been a middagsTft, so we might
+            // as well just return right away
+            return [];
+        }
+
         allGames.set(team.name, teamGames);
     }
 
