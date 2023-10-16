@@ -28,7 +28,7 @@ const getRandomReminder = () => {
 const sendMiddagsTftReminder = async (client) => {
     // wait for 0-20 minutes just so the reminder isn't sent
     // the exact same time every day
-    await randomDelay(0, 1);
+    await randomDelay(0, 20);
 
     const message = getRandomReminder();
 

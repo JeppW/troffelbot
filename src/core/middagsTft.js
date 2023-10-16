@@ -4,7 +4,7 @@ const { getLocalHourFromTimestamp } = require('../util/time');
 
 const isWithinMiddagsTftTimeRange = (timestamp) => {
     const hours = getLocalHourFromTimestamp(timestamp);
-    return (hours >= 11 && hours < 18);
+    return (hours >= 11 && hours < 14);
 }
 
 const isMiddagsTft = async (matchDto) => {
