@@ -18,10 +18,6 @@ const checkNewMatchResults = async (client) => {
     for (const guildId of await GuildController.getAllGuildIds()) {
         guildContext.set(guildId);
 
-        // the discord channel where the bot can posts it updates must be configured
-        const channelId = await GuildController.getChannel();
-        if (!channelId) return;
-
         // check if any games have been played
         const newGame = await checkForNewMiddagsTft();
         if (!newGame) return;
@@ -29,6 +25,11 @@ const checkNewMatchResults = async (client) => {
         // if so, find the winner, update the scoreboard and post an update
         const winner = await getMiddagsTftWinner(newGame);
         await GuildController.registerWin(winner.name, newGame.metadata.match_id);
+
+        // however, we can only do this if the update channel is configured
+        // if not, we still register the win, we just don't announce it
+        const channelId = await GuildController.getChannel();
+        if (!channelId) return;
 
         const scoreboard = await getScoreboard();
 
