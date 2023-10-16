@@ -1,5 +1,6 @@
-const { dbManager, guildContext } = require('../database/db');
-const { sleep } = require('../util/time');
+const guildContext = require('../context/guildContext');
+const GuildController = require('../controllers/guildController');
+const { randomDelay } = require('../util/time');
 
 // keep track of the last reminder that was sent
 let lastReminder = '';
@@ -23,31 +24,20 @@ const getRandomReminder = () => {
     return reminder;
 }
   
-const randomDelay = async (minMinutes, maxMinutes) => {
-    // convert to milliseconds
-    const minMillis = minMinutes * 60 * 1000;
-    const maxMillis = maxMinutes * 60 * 1000;
-
-    // sleep for a random number of milliseconds within the defined interval
-    const delayMillis = Math.floor(Math.random() * (maxMillis - minMillis + 1)) + minMillis;
-    await sleep(delayMillis);
-}
-
 // send a gentle reminder that it's time to play MiddagsTFT
 const sendMiddagsTftReminder = async (client) => {
     // wait for 0-20 minutes just so the reminder isn't sent
     // the exact same time every day
-    await randomDelay(0, 20);
+    await randomDelay(0, 1);
+
+    const message = getRandomReminder();
 
     // send the reminder to all servers
-    for (const guildId of dbManager.getAllGuilds()) {
+    for (const guildId of await GuildController.getAllGuildIds()) {
         guildContext.set(guildId);
-        const db = guildContext.getDatabase();
         
-        const channelId = db.getMessageChannel();
+        const channelId = await GuildController.getChannel();
         if (!channelId) continue;
-    
-        const message = getRandomReminder();
     
         client.channels.fetch(channelId)
             .then(channel => channel.send(message))

@@ -20,16 +20,19 @@ __Bot configuration__
 - `/ping`: Verify that the bot is still running.
 
 ## Installation
-Clone and install the project.
+Clone the project and install the dependencies.
 ```
 git clone https://github.com/JeppW/troffelbot
 cd troffelbot
 npm install
 ```
 
-Create an .env file like the example below (the keys below are dummy values and will not work). 
+Setup a MongoDB database. This can be done easily and for free using [MongoDB Atlas](https://www.mongodb.com/atlas/database).
+
+Create an .env file like the example below (the keys below are dummy values and will not work).
 
 ```
+MONGODB_URI=mongodb+srv://[user]:[password]@your.database.mongodb.net/?retryWrites=true&w=majority
 DISCORD_TOKEN=NzQ4NjA2MjcyMzYxOTcyMDAx.X0hVwQ.Vua39sn8PFOuG8DzgCk9MFqxyz4
 DISCORD_APPLICATION_ID=157730590492196864
 RIOT_TOKEN=RGAPI-516b8a0e-6172-11ee-8c99-0242ac120002

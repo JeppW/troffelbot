@@ -1,15 +1,14 @@
 const { ApplicationCommandOptionType } = require('discord.js');
-const { guildContext } = require('../database/db');
+const GuildController = require('../controllers/guildController');
 
 const addTeam = async (interaction) => {
-    const db = guildContext.getDatabase();
     const teamName = interaction.options.getString('team-name');
 
-    if (db.teamExists(teamName)) {
+    if (await GuildController.teamExists(teamName)) {
         return await interaction.reply("That team already exists.");
     }
 
-    db.addTeam(teamName);
+    await GuildController.addTeam(teamName);
     
     await interaction.reply(`Added team \`${teamName}\`!`);
 }

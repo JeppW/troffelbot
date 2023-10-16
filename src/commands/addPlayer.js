@@ -1,13 +1,12 @@
 const { ApplicationCommandOptionType } = require('discord.js');
 const { getPuuid } = require('../integrations/riot');
-const { guildContext } = require('../database/db');
+const GuildController = require('../controllers/guildController');
 
 const addPlayer = async (interaction) => {
-    const db = guildContext.getDatabase();
     const teamName = interaction.options.getString('team-name');
     const playerName = interaction.options.getString('player');
 
-    if (!db.teamExists(teamName)) {
+    if (!(await GuildController.teamExists(teamName))) {
         return await interaction.reply("That team doesn't exist.");
     }
 
@@ -16,11 +15,12 @@ const addPlayer = async (interaction) => {
         return await interaction.reply("Hmm, I couldn't find that account using the Riot API. Make sure the username is correct.");
     }
 
-    if (db.getAllPlayerPuuids().includes(puuid)) {
+    const allPlayerNames = await GuildController.getAllPlayerNames();
+    if (allPlayerNames.includes(playerName)) {
         return await interaction.reply("That player is already registered.");
     }
 
-    db.addPlayerToTeam(teamName, playerName, puuid);
+    await GuildController.addPlayer(teamName, playerName, puuid);
 
     await interaction.reply(`Added player \`${playerName}\` to team \`${teamName}\`!`);
 }

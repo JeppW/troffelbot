@@ -1,15 +1,15 @@
 const { ApplicationCommandOptionType } = require('discord.js');
-const { guildContext } = require('../database/db');
+const GuildController = require('../controllers/guildController');
 
 const removePlayer = async (interaction) => {
-    const db = guildContext.getDatabase();
     const playerName = interaction.options.getString('player');
 
-    if (!db.getAllPlayerNames().includes(playerName)) {
+    const allPlayerNames = await GuildController.getAllPlayerNames();
+    if (!allPlayerNames.includes(playerName)) {
         return await interaction.reply("That player doesn't exist.");
     }
 
-    db.removePlayer(playerName);
+    await GuildController.removePlayer(playerName);
 
     await interaction.reply(`Removed player \`${playerName}\`.`);
 }

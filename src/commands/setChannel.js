@@ -1,11 +1,10 @@
 const { ApplicationCommandOptionType } = require('discord.js');
-const { guildContext } = require('../database/db');
+const GuildController = require('../controllers/guildController');
 
 const setChannel = async (interaction) => {
-    const db = guildContext.getDatabase();
     const channel = interaction.options.getChannel('channel');
     
-    db.setMessageChannel(channel.id);
+    await GuildController.setChannel(channel.id);
 
     await interaction.reply(`Coolio, I'll post my updates in <#${channel.id}> from now on.`);
 }

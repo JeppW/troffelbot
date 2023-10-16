@@ -1,9 +1,8 @@
-const { guildContext } = require('../database/db');
+const GuildController = require("../controllers/guildController");
 
 // get a pretty scoreboard for displaying in a discord channel
-const getScoreboard = () => {
-    const db = guildContext.getDatabase();
-    const teams = db.getTeams();
+const getScoreboard = async () => {
+    const teams = await GuildController.getAllTeams();
 
     // team names are padded with whitespace so their scores line up nicely
     const longestTeamName = Math.max(...teams.map(team => team.name.length));

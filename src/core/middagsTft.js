@@ -1,15 +1,13 @@
-const { guildContext } = require('../database/db');
+const GuildController = require('../controllers/guildController');
 const { getMatchHistory, getMatchInfo } = require('../integrations/riot');
 const { getLocalHourFromTimestamp } = require('../util/time');
 
 const isWithinMiddagsTftTimeRange = (timestamp) => {
     const hours = getLocalHourFromTimestamp(timestamp);
-    return (hours >= 11 && hours < 14);
+    return (hours >= 11 && hours < 18);
 }
 
-const isMiddagsTft = (matchDto) => {
-    const db = guildContext.getDatabase();
-
+const isMiddagsTft = async (matchDto) => {
     // check if game finished during lunch time
     // the unix timestamp in the DTO is in milliseconds, so convert to seconds
     if (!isWithinMiddagsTftTimeRange(matchDto.info.game_datetime / 1000)) {
@@ -17,11 +15,11 @@ const isMiddagsTft = (matchDto) => {
     }
 
     // check if game featured participants from all teams
-    const teams = db.getTeams();
+    const teams = await GuildController.getAllTeams();
     const participants = matchDto.metadata.participants;
 
     for (const team of teams) {
-        const playerPuuids = db.getPlayerPuuidsForTeam(team.name);
+        const playerPuuids = await GuildController.getPlayerPuuidsForTeam(team.name);
         if (!playerPuuids.some(player => participants.includes(player))) {
             return false;
         }
@@ -30,9 +28,8 @@ const isMiddagsTft = (matchDto) => {
     return true;
 }
 
-const getMiddagsTftWinner = (matchDto) => {
-    const db = guildContext.getDatabase();
-    const teams = db.getTeams();
+const getMiddagsTftWinner = async (matchDto) => {
+    const teams = await GuildController.getAllTeams();
     const participants = matchDto.info.participants;
     
     // sort by placement in ascending order
@@ -42,7 +39,7 @@ const getMiddagsTftWinner = (matchDto) => {
     // the team to which the best-placing member belongs is the winner
     for (const participant of participants) {
         for (const team of teams) {
-            const playerPuuids = db.getPlayerPuuidsForTeam(team.name);
+            const playerPuuids = await GuildController.getPlayerPuuidsForTeam(team.name);
             if (playerPuuids.includes(participant.puuid)) {
                 return team;
             }
@@ -56,13 +53,11 @@ const getMiddagsTftWinner = (matchDto) => {
 // only choose games that at least one player from each team
 // participated in - this saves us some API requests
 const getCombinedMatchHistory = async () => {
-    const db = guildContext.getDatabase();
-
-    const teams = db.getTeams();
+    const teams = await GuildController.getAllTeams();
     const allGames = new Map();
 
     for (const team of teams) {
-        const players = db.getPlayerPuuidsForTeam(team.name);
+        const players = await GuildController.getPlayerPuuidsForTeam(team.name);
         const teamGames = new Set();
 
         for (const player of players) {
@@ -112,13 +107,12 @@ const getCombinedMatchHistory = async () => {
 // returns the DTO of a valid MiddagsTFT game if one is found
 // otherwise, returns null
 const checkForNewMiddagsTft = async () => {
-    const db = guildContext.getDatabase();
     const games = await getCombinedMatchHistory();
 
     if (!games) return false;
 
     for (const game of games) {
-        if (db.getRecordedGames().includes(game)) {
+        if ((await GuildController.getRecordedGames()).includes(game)) {
             // don't return games that have already been recorded
             continue;
         }
@@ -126,7 +120,7 @@ const checkForNewMiddagsTft = async () => {
         gameDto = await getMatchInfo(game);
         if (!gameDto) return false;  // an error occurred during the API request
 
-        if (isMiddagsTft(gameDto)) {
+        if (await isMiddagsTft(gameDto)) {
             return gameDto;
         }
     }

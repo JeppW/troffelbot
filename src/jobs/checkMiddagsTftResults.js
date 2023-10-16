@@ -1,4 +1,5 @@
-const { dbManager, guildContext } = require('../database/db');
+const GuildController = require('../controllers/guildController');
+const guildContext = require('../context/guildContext');
 const { getCurrentTime } = require('../util/time');
 const { getScoreboard } = require('../core/scoreboard');
 const { 
@@ -14,12 +15,11 @@ const checkNewMatchResults = async (client) => {
     if (!isWithinMiddagsTftTimeRange(getCurrentTime())) return;
 
     // check all available databases for new matches
-    for (const guildId of dbManager.getAllGuilds()) {
+    for (const guildId of await GuildController.getAllGuildIds()) {
         guildContext.set(guildId);
-        const db = guildContext.getDatabase();
 
         // the discord channel where the bot can posts it updates must be configured
-        const channelId = db.getMessageChannel();
+        const channelId = await GuildController.getChannel();
         if (!channelId) return;
 
         // check if any games have been played
@@ -27,10 +27,10 @@ const checkNewMatchResults = async (client) => {
         if (!newGame) return;
 
         // if so, find the winner, update the scoreboard and post an update
-        const winner = getMiddagsTftWinner(newGame);
-        db.registerWin(winner.name, newGame.metadata.match_id);
+        const winner = await getMiddagsTftWinner(newGame);
+        await GuildController.registerWin(winner.name, newGame.metadata.match_id);
 
-        const scoreboard = getScoreboard();
+        const scoreboard = await getScoreboard();
 
         client.channels.fetch(channelId)
             .then(channel => channel.send(`\`${winner.name}\` won MiddagsTFT!`))

@@ -1,10 +1,22 @@
 const { Client, GatewayIntentBits } = require("discord.js");
+const mongoose = require('mongoose');
 
 const loadCommands = require('./util/loadCommands');
 const scheduleJobs = require('./util/scheduleJobs');
-const { dbManager, guildContext } = require("./database/db");
+const guildContext = require("./context/guildContext");
+const { GuildModel } = require("./models/guildModel");
 
 require('dotenv').config();
+
+// connect to mongo server
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+        console.log('Successfully connected to MongoDB.');
+    })       
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
 
 const commands = loadCommands();
 
@@ -16,8 +28,9 @@ client.on('interactionCreate', async (interaction) => {
     const guildId = interaction.guildId;
 
     // this should never happen, but just in case
-    if (!dbManager.databaseExists(guildId)) {
-        dbManager.createDatabase(guildId);
+    if (!(await GuildModel.findOne({ id: guildId }))) {
+        const guild = new GuildModel({ id: guildId });
+        await guild.save();
     }
 
     guildContext.set(guildId);
@@ -33,9 +46,10 @@ client.on('interactionCreate', async (interaction) => {
     }
 });
 
-client.on('guildCreate', (guild) => {
+client.on('guildCreate', async (guild) => {
     // create a database when added to a Discord server
-    dbManager.createDatabase(guild.id);
+    const newGuild = new GuildModel({ id: guild.id });
+    await newGuild.save();
 });
 
 client.once('ready', () => {

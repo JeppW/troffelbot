@@ -1,7 +1,7 @@
 const { getScoreboard } = require('../core/scoreboard');
 
 const displayStatus = async (interaction) => {
-    const scoreboard = getScoreboard();
+    const scoreboard = await getScoreboard();
     await interaction.reply(scoreboard);
 }
 
