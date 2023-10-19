@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
-const { TeamSchema } = require('./teamModel');
+const { TeamSchema } = require('./team');
 
 const GuildSchema = new mongoose.Schema({
     id: String,
     channel: { type: String, default: '' },
     teams: { type: [TeamSchema], default: [] },
-    recordedGames: { type: Array, default: [] }
+    recordedGames: { type: Array, default: [] },
+    lastReminder: { type: String, default: ''}
 });
 
-const GuildModel = mongoose.model('Guild', GuildSchema);
+const Guild = mongoose.model('Guild', GuildSchema);
 
 module.exports = {
-    GuildModel
+    Guild
 };

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { PlayerSchema } = require('./playerModel');
+const { PlayerSchema } = require('./player');
 
 const TeamSchema = new mongoose.Schema({
     name: String,
@@ -7,9 +7,9 @@ const TeamSchema = new mongoose.Schema({
     players: { type: [PlayerSchema], default: [] }
 });
 
-const TeamModel = mongoose.model('Team', TeamSchema);
+const Team = mongoose.model('Team', TeamSchema);
 
 module.exports = {
     TeamSchema,
-    TeamModel
+    Team
 };

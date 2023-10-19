@@ -1,10 +1,10 @@
-const { Client, GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits } = require('discord.js');
 const mongoose = require('mongoose');
 
 const loadCommands = require('./util/loadCommands');
 const scheduleJobs = require('./util/scheduleJobs');
-const guildContext = require("./context/guildContext");
-const { GuildModel } = require("./models/guildModel");
+const guildContext = require('./context/guildContext');
+const { Guild } = require('./models/guild');
 
 require('dotenv').config();
 
@@ -28,8 +28,8 @@ client.on('interactionCreate', async (interaction) => {
     const guildId = interaction.guildId;
 
     // this should never happen, but just in case
-    if (!(await GuildModel.findOne({ id: guildId }))) {
-        const guild = new GuildModel({ id: guildId });
+    if (!(await Guild.findOne({ id: guildId }))) {
+        const guild = new Guild({ id: guildId });
         await guild.save();
     }
 
@@ -48,7 +48,7 @@ client.on('interactionCreate', async (interaction) => {
 
 client.on('guildCreate', async (guild) => {
     // create a database when added to a Discord server
-    const newGuild = new GuildModel({ id: guild.id });
+    const newGuild = new Guild({ id: guild.id });
     await newGuild.save();
 });
 

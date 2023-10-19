@@ -1,7 +1,7 @@
 const guildContext = require('../context/guildContext');
-const { GuildModel } = require('../models/guildModel');
-const { PlayerModel } = require('../models/playerModel');
-const { TeamModel } = require('../models/teamModel');
+const { Guild } = require('../models/guild');
+const { Player } = require('../models/player');
+const { Team } = require('../models/team');
 
 // an interface for interacting with the database
 // implemented as an object literal to prevent polluting the global namespace
@@ -9,7 +9,7 @@ const GuildController = {
     // internal helper method to get the guild from the context
     async _getGuild() {
         const guildId = guildContext.get();
-        const guild = await GuildModel.findOne( { id: guildId });
+        const guild = await Guild.findOne( { id: guildId });
 
         if (!guild) {
             throw new ContextError("No guild matching the current context was found.");
@@ -19,7 +19,7 @@ const GuildController = {
     },
 
     async getAllGuildIds() {
-        const guilds = await GuildModel.find({}).select('id');
+        const guilds = await Guild.find({}).select('id');
         return guilds.map(guild => guild.id);
     },
 
@@ -40,7 +40,7 @@ const GuildController = {
             return;
         }
 
-        const team = new TeamModel({ name: teamName });
+        const team = new Team({ name: teamName });
 
         guild.teams.push(team);
         await guild.save();
@@ -65,7 +65,7 @@ const GuildController = {
         const guild = await this._getGuild();
 
         const team = guild.teams.find(team => team.name === teamName);
-        const player = new PlayerModel({ name: playerName, puuid: playerPuuid });
+        const player = new Player({ name: playerName, puuid: playerPuuid });
 
         team.players.push(player);
         await guild.save();
@@ -113,6 +113,18 @@ const GuildController = {
         const guild = await this._getGuild();
 
         guild.recordedGames.push(gameId);
+
+        await guild.save();
+    },
+
+    async getLastReminder() {
+        return (await this._getGuild()).lastReminder;
+    },
+
+    async setLastReminder(reminder) {
+        const guild = await this._getGuild();
+
+        guild.lastReminder = reminder;
 
         await guild.save();
     },

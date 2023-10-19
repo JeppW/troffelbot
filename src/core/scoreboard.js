@@ -1,4 +1,4 @@
-const GuildController = require("../controllers/guildController");
+const GuildController = require('../controllers/guildController');
 
 // get a pretty scoreboard for displaying in a discord channel
 const getScoreboard = async () => {

@@ -5,9 +5,9 @@ const PlayerSchema = new mongoose.Schema({
     puuid: String
 });
 
-const PlayerModel = mongoose.model('Player', PlayerSchema);
+const Player = mongoose.model('Player', PlayerSchema);
 
 module.exports = {
     PlayerSchema,
-    PlayerModel
+    Player
 };
